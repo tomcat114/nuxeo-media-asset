@@ -1,0 +1,12 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: nuxeo.media.asset
+Bundle-Version: 1.0.0
+Bundle-Name: nuxeo-media-asset-core
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: nuxeo.media.asset.core;singleton=true
+Nuxeo-Component: OSGI-INF/media-asset-service.xml,
+    OSGI-INF/listener-contrib.xml,
+    OSGI-INF/filemanager-plugin-contrib.xml
+

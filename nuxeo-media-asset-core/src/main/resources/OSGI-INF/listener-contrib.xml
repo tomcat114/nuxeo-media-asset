@@ -1,0 +1,11 @@
+<component name="nuxeo.media.asset.listeners">
+    <require>org.nuxeo.ecm.platform.picture.listeners</require>
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+        <listener name="compoundAssetListener" async="false" postCommit="false"
+                  class="nuxeo.media.asset.listener.MediaAssetListener" priority="0">
+            <event>aboutToCreate</event>
+            <event>beforeDocumentModification</event>
+            <event>aboutToImport</event>
+        </listener>
+    </extension>
+</component>

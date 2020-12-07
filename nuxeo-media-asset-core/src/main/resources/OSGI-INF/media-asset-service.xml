@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<component name="nuxeo.media.asset.service" version="1.0">
+
+    <documentation>
+        A service that provides methods to handle multiple media asset types (picture, video, audio ...)
+        with a single document type
+    </documentation>
+
+    <implementation class="nuxeo.media.asset.service.MediaAssetServiceImpl" />
+
+    <service>
+        <provide interface="nuxeo.media.asset.service.MediaAssetService" />
+    </service>
+
+    <extension-point name="mediatype">
+        <documentation>
+            In the context of the Media Asset Service, a media type describes a correspondence between file mime-types
+            and Document Facets
+        </documentation>
+        <object class="nuxeo.media.asset.service.MediaTypeDescriptor" />
+    </extension-point>
+
+    <extension-point name="supportedZipContent">
+        <documentation>
+            List the mimetype of supported content packaged in a ZIP archive
+        </documentation>
+        <object class="nuxeo.media.asset.service.MimetypeListDescriptor" />
+    </extension-point>
+
+    <extension target="nuxeo.media.asset.service" point="mediatype">
+        <mediatype name="Picture" order="0">
+            <mimetype>image/.*</mimetype>
+            <mimetype>application/photoshop</mimetype>
+            <mimetype>application/illustrator</mimetype>
+            <mimetype>application/postscript</mimetype>
+            <facet>Picture</facet>
+        </mediatype>
+
+        <mediatype name="Video" order="2">
+            <mimetype>video/.*</mimetype>
+            <mimetype>application/gxf</mimetype>
+            <mimetype>application/mxf</mimetype>
+            <facet>Video</facet>
+            <facet>HasVideoPreview</facet>
+            <facet>HasStoryboard</facet>
+        </mediatype>
+
+        <mediatype name="Audio" order="3">
+            <mimetype>audio/.*</mimetype>
+            <facet>Audio</facet>
+        </mediatype>
+
+    </extension>
+
+    <extension point="configuration" target="org.nuxeo.runtime.ConfigurationService">
+        <property name="nuxeo.media.asset.service.default.filter.name">
+            nuxeo.media.asset.service.default.filter
+        </property>
+    </extension>
+
+    <extension point="filters" target="org.nuxeo.ecm.platform.actions.ActionService">
+        <filter id="nuxeo.media.asset.service.default.filter">
+            <rule grant="true">
+                <schema>file</schema>
+            </rule>
+        </filter>
+    </extension>
+
+</component>

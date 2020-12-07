@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<component name="test-media-asset-service-with-custom-facet" version="1.0">
+
+    <extension target="nuxeo.media.asset.service" point="mediatype">
+        <mediatype name="Test" order="1">
+            <facet>Custom</facet>
+        </mediatype>
+    </extension>
+
+</component>

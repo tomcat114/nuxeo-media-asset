@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<component name="nuxeo.media.asset.filemanager" version="1.0">
+    <extension target="org.nuxeo.ecm.platform.filemanager.service.FileManagerService" point="plugins">
+        <!-- order must be lower than the DAM and 3D importers (>10) -->
+        <plugin class="nuxeo.media.asset.filemanager.MediaAssetFileImporter"
+                name="AssetImporter" docType="File" order="-1" >
+            <filter>.*</filter>
+        </plugin>
+    </extension>
+</component>

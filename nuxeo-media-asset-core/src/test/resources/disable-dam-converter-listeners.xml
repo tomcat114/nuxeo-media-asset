@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="disable-dam-converter-listeners">
+
+    <require>org.nuxeo.ecm.platform.picture.listeners</require>
+    <require>org.nuxeo.platform.video.core.listeners</require>
+
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+
+
+        <listener name="pictureChangedListener" async="false" postCommit="false"
+                  class="org.nuxeo.ecm.platform.picture.listener.PictureChangedListener"
+                  priority="20" enabled="false">
+        </listener>
+
+        <listener name="pictureViewsGenerationListener" async="false" postCommit="false"
+                  class="org.nuxeo.ecm.platform.picture.listener.PictureViewsGenerationListener"
+                  priority="20" enabled="false">
+        </listener>
+
+        <listener name="videoChangedListener" async="false" postCommit="false"
+                  class="org.nuxeo.ecm.platform.video.listener.VideoChangedListener"
+                  priority="20" enabled="false">
+        </listener>
+
+    </extension>
+
+</component>
