@@ -25,6 +25,6 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.RunnerFeature;
 
 @Features({ PlatformFeature.class })
-@Deploy({ "org.nuxeo.ecm.platform.filemanager", "org.nuxeo.ecm.platform.types"})
+@Deploy({ "org.nuxeo.ecm.platform.filemanager.core", "org.nuxeo.ecm.platform.types.core"})
 public class FilemanagerTestFeature implements RunnerFeature {
 }

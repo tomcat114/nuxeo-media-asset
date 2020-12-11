@@ -21,10 +21,14 @@ package nuxeo.media.asset.filemanager;
 
 import java.io.IOException;
 
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.platform.filemanager.api.FileImporterContext;
 import org.nuxeo.ecm.platform.filemanager.service.extension.DefaultFileImporter;
+import org.nuxeo.ecm.platform.types.Type;
+import org.nuxeo.ecm.platform.types.TypeManager;
 import org.nuxeo.runtime.api.Framework;
 
 import nuxeo.media.asset.service.MediaAssetService;
@@ -44,6 +48,21 @@ public class MediaAssetFileImporter extends DefaultFileImporter {
             }
         } catch (NuxeoException e) {
             return null;
+        }
+    }
+    
+    protected void checkAllowedSubtypes(CoreSession session, String path, String typeName) {
+        PathRef containerRef = new PathRef(path);
+        DocumentModel container = session.getDocument(containerRef);
+        TypeManager typeService = Framework.getService(TypeManager.class);
+        Type containerType = typeService.getType(container.getType());
+        if (containerType == null) {
+            return;
+        }
+
+        if (!typeService.isAllowedSubType(typeName, container.getType(), container)) {
+            throw new NuxeoException(String.format("Cannot create document of type %s in container with type %s",
+                    typeName, containerType.getId()));
         }
     }
 }

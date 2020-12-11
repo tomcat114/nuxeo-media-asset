@@ -26,7 +26,7 @@ import org.nuxeo.runtime.test.runner.RunnerFeature;
 
 @Features({ PlatformFeature.class })
 @Deploy({"org.nuxeo.ecm.platform.picture.core",
-		"org.nuxeo.ecm.platform.video",
+		"org.nuxeo.ecm.platform.video.core",
 		"org.nuxeo.ecm.platform.audio.core",
 		"org.nuxeo.ecm.platform.tag",
 		"nuxeo.media.asset.core", "org.nuxeo.ecm.actions",

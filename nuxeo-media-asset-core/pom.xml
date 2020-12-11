@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.nuxeo</groupId>
         <artifactId>nuxeo-media-asset-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.0.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>nuxeo-media-asset-core</artifactId>
@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>org.nuxeo.ecm.platform</groupId>
-            <artifactId>nuxeo-platform-video</artifactId>
+            <artifactId>nuxeo-platform-video-core</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -59,8 +59,12 @@
         </dependency>
         <dependency>
             <groupId>org.nuxeo.ecm.platform</groupId>
-            <artifactId>nuxeo-platform-tag</artifactId>
+            <artifactId>nuxeo-platform-tag-core</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.nuxeo.ecm.platform</groupId>
+            <artifactId>nuxeo-platform-filemanager-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.nuxeo.ecm.platform</groupId>
