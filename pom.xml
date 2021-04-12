@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.nuxeo</groupId>
     <artifactId>nuxeo-parent</artifactId>
-    <version>11.4</version>
+    <version>2021.0</version>
   </parent>
 
   <groupId>org.nuxeo</groupId>
@@ -43,19 +43,9 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>hotfix-releases</id>
-      <url>https://packages.nuxeo.com/repository/maven-hotfix</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>nuxeo-studio</id>
-      <url>https://connect.nuxeo.com/nuxeo/site/studio/maven</url>
+  <repository>
+      <id>maven-internal</id>
+      <url>https://packages.nuxeo.com/repository/maven-internal/</url>
       <releases>
         <enabled>true</enabled>
       </releases>

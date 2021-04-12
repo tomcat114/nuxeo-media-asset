@@ -17,7 +17,8 @@
   <supported>false</supported>
   <platforms>
     <platform>server-@NUXEO_TARGET_VERSION@</platform>
-  </platforms>
+    <platform>lts-2021.*</platform>
+</platforms>
   <!-- Dependencies on other packages -->
   <!-- <dependencies> -->
   <!-- <package>another-package:1.0.0:1.0.0</package> -->
