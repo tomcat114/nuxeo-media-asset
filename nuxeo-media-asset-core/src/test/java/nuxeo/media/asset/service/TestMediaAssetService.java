@@ -24,7 +24,7 @@ import static org.nuxeo.ecm.platform.video.VideoConstants.HAS_STORYBOARD_FACET;
 import static org.nuxeo.ecm.platform.video.VideoConstants.HAS_VIDEO_PREVIEW_FACET;
 import static org.nuxeo.ecm.platform.video.VideoConstants.VIDEO_FACET;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,9 +33,11 @@ import nuxeo.media.asset.test.utils.SampleContent;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.common.utils.FileUtils;
+import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -47,6 +49,8 @@ import nuxeo.media.asset.test.features.MediaAssetTestFeature;
 
 @RunWith(FeaturesRunner.class)
 @Features(MediaAssetTestFeature.class)
+@Deploy("nuxeo.media.asset.core:test-media-asset-mapping-exts.xml")
+@Deploy("nuxeo.media.asset.core:test-media-asset-service-with-custom-facet.xml")
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 public class TestMediaAssetService {
 
@@ -63,21 +67,21 @@ public class TestMediaAssetService {
 
     @Test
     public void testGetPictureFacetFromJPEG() {
-        List<String> facets = mediaAssetService.getMediaFacets("image/jpeg");
+        List<String> facets = mediaAssetService.getMediaFacets("image/jpeg",null);
         Assert.assertEquals(1, facets.size());
         Assert.assertEquals(PICTURE_FACET, facets.get(0));
     }
 
     @Test
     public void testGetPictureFacetFromPSD() {
-        List<String> facets = mediaAssetService.getMediaFacets("application/photoshop");
+        List<String> facets = mediaAssetService.getMediaFacets("application/photoshop", null);
         Assert.assertEquals(1, facets.size());
         Assert.assertEquals(PICTURE_FACET, facets.get(0));
     }
 
     @Test
     public void testGetVideoFacetFromMimetype() {
-        List<String> facets = mediaAssetService.getMediaFacets("video/mp4");
+        List<String> facets = mediaAssetService.getMediaFacets("video/mp4", null);
         Assert.assertEquals(3, facets.size());
         Assert.assertTrue(facets.contains(VIDEO_FACET));
         Assert.assertTrue(facets.contains(HAS_STORYBOARD_FACET));
@@ -86,35 +90,52 @@ public class TestMediaAssetService {
 
     @Test
     public void testGetAudioFacetFromMimetype() {
-        List<String> facets = mediaAssetService.getMediaFacets("audio/mp3");
+        List<String> facets = mediaAssetService.getMediaFacets("audio/mp3", null);
         Assert.assertEquals(1, facets.size());
         Assert.assertEquals("Audio", facets.get(0));
     }
 
     @Test
     public void testGetNoFacetFromMimetype() {
-        List<String> facets = mediaAssetService.getMediaFacets("application/pdf");
+        List<String> facets = mediaAssetService.getMediaFacets("application/pdf", null);
         Assert.assertEquals(0, facets.size());
     }
 
     @Test
-    public void testGetPictureFacetFromBlob() {
-        FileBlob blob = new FileBlob(new File(getClass().getResource(SampleContent.JPEG_PATH).getPath()));
+    public void testGetFacetFromExtension() {
+        List<String> facets = mediaAssetService.getMediaFacets("application/octet-stream", "abc");
+        Assert.assertEquals(1, facets.size());
+        Assert.assertEquals("Custom", facets.get(0));
+    }
+
+    @Test
+    public void testGetPictureFacetFromBlob() throws IOException {
+        Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext(SampleContent.JPEG_PATH));
         List<String> facets = mediaAssetService.getMediaFacets(blob);
         Assert.assertEquals(1, facets.size());
         Assert.assertEquals(PICTURE_FACET, facets.get(0));
     }
 
     @Test
-    public void testGetNoFacetFromBlob() {
-        FileBlob blob = new FileBlob(new File(getClass().getResource(SampleContent.PDF_PATH).getPath()));
+    public void testGetCustomFacetFromBlobBasedOnExtension() throws IOException {
+        Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext(SampleContent.ABC_PATH));
+        List<String> facets = mediaAssetService.getMediaFacets(blob);
+        Assert.assertEquals(1, facets.size());
+        Assert.assertEquals("Custom", facets.get(0));
+    }
+
+    @Test
+    public void testGetNoFacetFromBlob() throws IOException {
+        Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext(SampleContent.PDF_PATH));
+
         List<String> facets = mediaAssetService.getMediaFacets(blob);
         Assert.assertEquals(0, facets.size());
     }
 
     @Test
-    public void testGetNoFacetZipBlob() {
-        FileBlob blob = new FileBlob(new File(getClass().getResource(SampleContent.ZIP_PATH).getPath()));
+    public void testGetNoFacetZipBlob() throws IOException {
+        Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext(SampleContent.ZIP_PATH));
+
         List<String> facets = mediaAssetService.getMediaFacets(blob);
         Assert.assertEquals(0, facets.size());
     }

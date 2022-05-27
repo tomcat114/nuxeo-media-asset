@@ -31,10 +31,15 @@ public class MimetypeListDescriptor implements Serializable {
 
     public static final List<String> DEFAULT_MIMETYPES = new ArrayList<>();
 
+    public static final List<String> DEFAULT_EXTENSIONS = new ArrayList<>();
+
     private static final long serialVersionUID = 1L;
 
     @XNodeList(value = "mimetype", type = ArrayList.class, componentType = String.class)
     protected List<String> mimetypes = DEFAULT_MIMETYPES;
+
+    @XNodeList(value = "extension", type = ArrayList.class, componentType = String.class)
+    protected List<String> extensions = DEFAULT_EXTENSIONS;
 
     public List<String> getMimetypes() {
         return mimetypes;
@@ -44,4 +49,11 @@ public class MimetypeListDescriptor implements Serializable {
         this.mimetypes = mimetypes;
     }
 
+    public List<String> getExtensions() {
+        return extensions;
+    }
+
+    public void setExtensions(List<String> extensions) {
+        this.extensions = extensions;
+    }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<component name="test-media-asset-mapping-exts" version="1.0">
+
+    <require>nuxeo.media.asset.service</require>
+
+
+    <extension target="nuxeo.media.asset.service" point="mediatype">
+        <mediatype name="Custom" order="0">
+            <mimetype>custom/.*</mimetype>
+            <mimetype>custom/fooey</mimetype>
+            <extension>abc</extension>
+            <extension>123</extension>
+            <extension>testext</extension>
+
+            <facet>Custom</facet>
+        </mediatype>
+    </extension>
+    
+
+</component>
