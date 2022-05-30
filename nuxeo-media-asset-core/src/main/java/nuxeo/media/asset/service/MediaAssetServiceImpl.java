@@ -31,6 +31,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.lang3.StringUtils;
+import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.platform.actions.ActionContext;
@@ -119,6 +121,8 @@ public class MediaAssetServiceImpl extends DefaultComponent implements MediaAsse
             return new ArrayList<>();
         }
 
+        String extension = FileUtils.getFileExtension(blob.getFilename());
+
         MimetypeRegistry registry = Framework.getService(MimetypeRegistry.class);
         String mimetype = registry.getMimetypeFromFilenameAndBlobWithDefault(blob.getFilename(), blob, null);
 
@@ -126,18 +130,19 @@ public class MediaAssetServiceImpl extends DefaultComponent implements MediaAsse
             mimetype = getZipContentMimetype(blob);
         }
 
-        return mimetype != null ? getMediaFacets(mimetype) : new ArrayList<>();
+        return mimetype != null || extension != null ? getMediaFacets(mimetype, extension) : new ArrayList<>();
     }
 
     @Override
-    public List<String> getMediaFacets(String mimetype) {
+    public List<String> getMediaFacets(String mimetype, String extension) {
         List<MediaTypeDescriptor> types = new ArrayList<>(mediatypes.values());
         types.sort(Comparator.comparingInt(MediaTypeDescriptor::getOrder));
         List<String> facets = new ArrayList<>();
         Iterator<MediaTypeDescriptor> iterator = types.iterator();
         while (facets.size() == 0 && iterator.hasNext()) {
             MediaTypeDescriptor type = iterator.next();
-            if (type.isEnabled() && doesMimetypeMatchesType(mimetype, type)) {
+            if (type.isEnabled() &&
+                    (doesMimetypeMatchesType(mimetype, type) || doesMatchExtension(extension, type.getExtensions()))) {
                 facets = type.getFacets();
             }
         }
@@ -145,12 +150,26 @@ public class MediaAssetServiceImpl extends DefaultComponent implements MediaAsse
     }
 
     protected boolean doesMimetypeMatchesType(String mimetype, MediaTypeDescriptor type) {
-        for (String mimetypePattern : type.mimetypes) {
-            Pattern pattern = Pattern.compile(mimetypePattern);
-            if (pattern.matcher(mimetype).matches()) {
-                return true;
+        if (mimetype != null) {
+            for (String mimetypePattern : type.mimetypes) {
+                Pattern pattern = Pattern.compile(mimetypePattern);
+                if (pattern.matcher(mimetype).matches()) {
+                    return true;
+                }
             }
         }
+        return false;
+    }
+
+    protected boolean doesMatchExtension(String extension, List<String> extensions) {
+        if (StringUtils.isNotBlank(extension)) {
+            for (String typeExtension : extensions) {
+                if (typeExtension.equalsIgnoreCase(extension)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -166,9 +185,14 @@ public class MediaAssetServiceImpl extends DefaultComponent implements MediaAsse
                 if (zipEntry.isDirectory() || zipEntry.getName().startsWith(".")) {
                     continue;
                 }
-                String entryMimetype = registry.getMimetypeFromFilename(
-                        FileManagerUtils.fetchTitle(zipEntry.getName()));
-                if (supportedZipContent!= null && supportedZipContent.getMimetypes().contains(entryMimetype)) {
+
+                String name = FileManagerUtils.fetchTitle(zipEntry.getName());
+                String extension = FileUtils.getFileExtension(name);
+
+                String entryMimetype = registry.getMimetypeFromFilename(name);
+                if (supportedZipContent!= null
+                        && (supportedZipContent.getMimetypes().contains(entryMimetype)
+                            || doesMatchExtension(extension, supportedZipContent.getExtensions()))) {
                     mimetype = entryMimetype;
                     break;
                 }

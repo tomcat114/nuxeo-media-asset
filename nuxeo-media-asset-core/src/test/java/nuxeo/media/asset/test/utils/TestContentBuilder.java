@@ -24,9 +24,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.common.utils.FileUtils;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACP;
@@ -105,31 +104,35 @@ public class TestContentBuilder {
     }
 
     public DocumentModel build() {
-        DocumentModel doc = session.createDocumentModel(path, name, type);
-        doc.setPropertyValue("dc:title", name);
-        if (filePath != null) {
-            Blob blob = new FileBlob(new File(getClass().getResource(filePath).getPath()));
-            MimetypeRegistry registry = Framework.getService(MimetypeRegistry.class);
-            String mimetype = registry.getMimetypeFromFilenameAndBlobWithDefault(blob.getFilename(), blob, null);
-            if (mimetype != null) {
-                blob.setMimeType(mimetype);
+        try {
+            DocumentModel doc = session.createDocumentModel(path, name, type);
+            doc.setPropertyValue("dc:title", name);
+            if (filePath != null) {
+                Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext(filePath));
+                MimetypeRegistry registry = Framework.getService(MimetypeRegistry.class);
+                String mimetype = registry.getMimetypeFromFilenameAndBlobWithDefault(blob.getFilename(), blob, null);
+                if (mimetype != null) {
+                    blob.setMimeType(mimetype);
+                }
+                doc.setPropertyValue("file:content", (Serializable) blob);
             }
-            doc.setPropertyValue("file:content", (Serializable) blob);
-        }
-        for (Map.Entry<String, Serializable> entry : properties.entrySet()) {
-            doc.setPropertyValue(entry.getKey(), entry.getValue());
-        }
+            for (Map.Entry<String, Serializable> entry : properties.entrySet()) {
+                doc.setPropertyValue(entry.getKey(), entry.getValue());
+            }
 
-        doc = session.createDocument(doc);
+            doc = session.createDocument(doc);
 
-        ACP acp = doc.getACP() != null ? doc.getACP() : new ACPImpl();
-        for (Map.Entry<String, String> entry : permissions.entrySet()) {
-            ACE ace = ACE.builder(entry.getKey(), entry.getValue()).creator(session.getPrincipal().getName()).build();
-            acp.addACE("test", ace);
+            ACP acp = doc.getACP() != null ? doc.getACP() : new ACPImpl();
+            for (Map.Entry<String, String> entry : permissions.entrySet()) {
+                ACE ace = ACE.builder(entry.getKey(), entry.getValue()).creator(session.getPrincipal().getName()).build();
+                acp.addACE("test", ace);
+            }
+            doc.setACP(acp, true);
+            doc = session.saveDocument(doc);
+
+            return doc;
+        } catch (Exception e) {
+            throw new NuxeoException(e);
         }
-        doc.setACP(acp, true);
-        doc = session.saveDocument(doc);
-
-        return doc;
     }
 }

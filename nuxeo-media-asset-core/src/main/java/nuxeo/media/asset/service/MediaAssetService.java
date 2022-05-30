@@ -59,11 +59,11 @@ public interface MediaAssetService {
     List<String> getMediaFacets(Blob blob);
 
     /**
-     * Get the Document facets corresponding to the input mimtype
+     * Get the Document facets corresponding to the input mimetype and extension
      * 
      * @param mimetype a file mimetype
+     * @param extension file extension
      * @return A list of Facets
      */
-    List<String> getMediaFacets(String mimetype);
-
+    List<String> getMediaFacets(String mimetype, String extension);
 }

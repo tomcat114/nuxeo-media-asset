@@ -21,12 +21,14 @@ package nuxeo.media.asset.test.utils;
 
 public class SampleContent {
 
-    public static String JPEG_PATH = "/files/snow-011.jpg";
+    public static String JPEG_PATH = "files/snow-011.jpg";
 
-    public static String MP4_PATH = "/files/cloud-time-lapse.mp4";
+    public static String MP4_PATH = "files/cloud-time-lapse.mp4";
 
-    public static String PDF_PATH = "/files/awsgsg-emr_1.pdf";
+    public static String PDF_PATH = "files/awsgsg-emr_1.pdf";
 
-    public static String ZIP_PATH = "/files/small.zip";
+    public static String ZIP_PATH = "files/small.zip";
+
+    public static String ABC_PATH = "files/suzanne.ABC";
 
 }

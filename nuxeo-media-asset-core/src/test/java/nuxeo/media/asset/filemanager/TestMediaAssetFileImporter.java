@@ -19,7 +19,6 @@
 
 package nuxeo.media.asset.filemanager;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.inject.Inject;
@@ -31,10 +30,11 @@ import nuxeo.media.asset.test.utils.TestContentBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -62,7 +62,7 @@ public class TestMediaAssetFileImporter {
         DocumentModel workspace = TestContentBuilder.newInstance(session)
                                                     .setType("CustomFolder")
                                                     .build();
-        Blob blob = new FileBlob(new File(getClass().getResource(SampleContent.PDF_PATH).getPath()));
+        Blob blob = Blobs.createBlob(FileUtils.getResourceFileFromContext(SampleContent.PDF_PATH));
 
         FileImporterContext context = FileImporterContext.builder(session, blob, workspace.getPathAsString())
                                                          .overwrite(false)
